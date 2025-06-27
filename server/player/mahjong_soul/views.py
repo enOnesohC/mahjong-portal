@@ -7,7 +7,10 @@ from django.http import Http404
 from django.shortcuts import render
 from django.utils import timezone
 
-from player.mahjong_soul.models import MSAccountStatistic
+from player.mahjong_soul.models import (
+    MSAccountStatistic,
+    MSAccount
+)
 
 
 def ms_accounts(request, stat_type="four"):
@@ -40,3 +43,24 @@ def ms_accounts(request, stat_type="four"):
         filtered_statistics.append({"stat": statistic, "last_played_date": last_played_date})
 
     return render(request, "ms/ms_accounts.html", {"statistics": filtered_statistics, "four_players": four_players})
+
+
+def get_current_ms_games(request):
+    return render(request, "ms/ms_games.html", {})
+
+
+def get_current_ms_games_async(request):
+
+
+    ms_objects = MSAccount.active_objects.all().prefetch_related("player")
+    player_profiles = {}
+
+    for ms_object in ms_objects:
+        player_profiles[ms_object.tenhou_username] = ms_object.player
+
+
+    return render(
+        request,
+        "ms/ms_games_async.html",
+        {},
+    )

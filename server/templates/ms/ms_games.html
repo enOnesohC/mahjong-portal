@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Current Mahjong Soul games' %}
+{% endblock %}
+
+{% block content %}
+    <div id="games-container">
+        <p>{% trans 'loading...' %}</p>
+    </div>
+{% endblock %}
+
+{% block meta_tags %}
+    <meta name="description" content="{% trans 'Current Mahjong Soul games' %}">
+    <meta property="og:description" content="{% trans 'Current Mahjong Soul games' %}">
+{% endblock %}
+
+{% block additional_js %}
+    <script>
+        var games_url = '{% url 'get_current_ms_games_async' %}';
+        $(document).ready(function () {
+            update_games();
+
+            setInterval('update_games()', 30000);
+        });
+
+        function update_games() {
+            $.get(games_url, function (data) {
+                $('#games-container').html(data);
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block additional_css %}
+    <style>
+        th {
+            font-weight: normal;
+        }
+
+        @media (max-width:768px) {
+            th {
+                vertical-align: middle !important;
+                text-align: center;
+                padding: 5px !important;
+            }
+        }
+    </style>
+{% endblock %}
